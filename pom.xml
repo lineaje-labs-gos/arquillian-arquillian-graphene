@@ -1,339 +1,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>51</version>
-    <relativePath/>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jboss.arquillian.graphene</groupId>
-  <artifactId>graphene-parent</artifactId>
-  <version>3.0.1-lineaje-01</version>
-  <packaging>pom</packaging>
-  <name>Graphene: Parent</name>
-  <description>Testing Ajax with flavor of neat type-safe API</description>
-  <url>https://arquillian.org/</url>
-  <modules>
-    <module>build/resources</module>
-    <module>build/depchains/graphene-webdriver</module>
-    <module>spi</module>
-    <module>api</module>
-    <module>impl</module>
-    <module>ftest</module>
-    <module>extension/screenshooter</module>
-  </modules>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- jboss-parent overrides; make release target explicit -->
-    <maven.compiler.release>11</maven.compiler.release>
-    <!-- Arquillian -->
-    <version.arquillian.core>1.10.1.Final</version.arquillian.core>
-    <version.arquillian.drone>3.0.1.Final</version.arquillian.drone>
-    <!-- Runtime dependencies -->
-    <version.asm>9.9.1</version.asm>
-    <version.objenesis>3.5</version.objenesis>
-    <version.selenium>4.43.0</version.selenium>
-    <!-- Tests -->
-    <version.junit>4.13.2</version.junit>
-    <version.hamcrest>1.3</version.hamcrest>
-    <version.mockito>5.23.0</version.mockito>
-    <version.bytebuddy>1.18.8</version.bytebuddy>
-    <!-- Downgrade to last compatible JDK 11 version -->
-    <version.com.puppycrawl.checkstyle>10.26.1</version.com.puppycrawl.checkstyle>
-    <!-- Prevent warnings from surefire plugin every time tests are executed -->
-    <surefire.argLine>-XX:+IgnoreUnrecognizedVMOptions -Xshare:off</surefire.argLine>
-    <!-- Plugin versions -->
-    <version.central.publishing.maven.plugin>0.10.0</version.central.publishing.maven.plugin>
-    <!-- maven-release-plugin configuration -->
-    <releaseProfiles>release,gpg-sign</releaseProfiles>
-    <arguments>-DskipTests</arguments>
-    <!-- Maven Central properties -->
-    <repo.sonatype.url>https://central.sonatype.com</repo.sonatype.url>
-    <sonatype.server.id>central</sonatype.server.id>
-    <autoPublish>true</autoPublish>
-    <waitUntil>validated</waitUntil>
-    <deploymentName>arquillian-graphene-${project.version}</deploymentName>
-  </properties>
-  <licenses>
-    <license>
-      <name>GNU Lesser General Public License, Version 2.1</name>
-      <distribution>repo</distribution>
-      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:git:arquillian-arquillian-graphene</connection>
-    <developerConnection>scm:git:arquillian-arquillian-graphene</developerConnection>
-    <url>arquillian-arquillian-graphene</url>
-    <tag>3.0.1-lineaje-01</tag>
-  </scm>
-  <issueManagement>
-    <system>GitHub Issues</system>
-    <url>https://github.com/arquillian/arquillian-graphene/issues</url>
-  </issueManagement>
-  <ciManagement>
-    <system>GitHub Actions</system>
-    <url>https://github.com/arquillian/arquillian-graphene/actions</url>
-  </ciManagement>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.arquillian.graphene</groupId>
+        <artifactId>graphene-parent</artifactId>
+        <version>3.0.1.Final</version>
+        <relativePath>../../..</relativePath>
+    </parent>
+
+    <artifactId>graphene-webdriver</artifactId>
+    <version>3.0.1.Final-lineaje-01</version>
+    <packaging>pom</packaging>
+    <name>Graphene: Dependency Chain for Graphene WebDriver</name>
+    <description>Starting point for integration Graphene test suites</description>
+
+    <properties>
+        <testsuite.basedir>${project.parent.basedir}/..</testsuite.basedir>
+    </properties>
+
+    <dependencies>
+        <!-- Arquillian Graphene -->
+        <dependency>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver-api</artifactId>
+            <version>3.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver-spi</artifactId>
+            <version>3.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver-impl</artifactId>
+            <version>3.0.1.Final</version>
+        </dependency>
+
+        <!-- Arquillian Drone -->
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Selenium -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+        </dependency>
+
+    </dependencies>
   <dependencyManagement>
     <dependencies>
-      <!-- Arquillian dependencies -->
       <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <version>${version.arquillian.core}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.arquillian.core</groupId>
-        <artifactId>arquillian-core-impl-base</artifactId>
-        <version>${version.arquillian.core}</version>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.arquillian.test</groupId>
-        <artifactId>arquillian-test-impl-base</artifactId>
-        <version>${version.arquillian.core}</version>
-        <classifier>tests</classifier>
-      </dependency>
-      <!-- Arquillian Drone dependencies -->
-      <dependency>
-        <groupId>org.jboss.arquillian.extension</groupId>
-        <artifactId>arquillian-drone-bom</artifactId>
-        <version>${version.arquillian.drone}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Selenium dependencies -->
-      <dependency>
-        <groupId>org.seleniumhq.selenium</groupId>
-        <artifactId>selenium-bom</artifactId>
-        <version>${version.selenium}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- HtmlUnit is kept externally from Selenium BOM -->
-      <dependency>
-        <groupId>org.seleniumhq.selenium</groupId>
-        <artifactId>htmlunit3-driver</artifactId>
-        <version>${version.selenium}</version>
-      </dependency>
-      <!-- runtime dependencies -->
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm</artifactId>
-        <version>${version.asm}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.bytebuddy</groupId>
-        <artifactId>byte-buddy</artifactId>
-        <version>${version.bytebuddy}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.objenesis</groupId>
-        <artifactId>objenesis</artifactId>
-        <version>${version.objenesis}</version>
-      </dependency>
-      <!-- Test dependencies -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-all</artifactId>
-        <version>${version.hamcrest}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${version.mockito}</version>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.28.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <executions>
-            <execution>
-              <goals>
-                <goal>test-jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <configuration>
-            <configLocation>code-style/checkstyle.xml</configLocation>
-            <logViolationsToConsole>true</logViolationsToConsole>
-            <violationSeverity>error</violationSeverity>
-            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          </configuration>
-          <executions>
-            <execution>
-              <id>checkstyle-report</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <!-- The puppycrawl dependency is needed to override the version using JDK 11 from the parent -->
-              <groupId>com.puppycrawl.tools</groupId>
-              <artifactId>checkstyle</artifactId>
-              <version>${version.com.puppycrawl.checkstyle}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.jboss.arquillian.graphene</groupId>
-              <artifactId>graphene-build-resources</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <configuration>
-            <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
-          </configuration>
-          <executions>
-            <execution>
-              <phase>test</phase>
-              <goals>
-                <goal>report-only</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <useStandardDocletOptions>true</useStandardDocletOptions>
-            <charset>UTF-8</charset>
-            <encoding>UTF-8</encoding>
-            <docencoding>UTF-8</docencoding>
-            <breakiterator>true</breakiterator>
-            <version>true</version>
-            <author>true</author>
-            <keywords>true</keywords>
-            <javadocDirectory>${project.parent.parent.basedir}/javadoc</javadocDirectory>
-          </configuration>
-          <executions>
-            <execution>
-              <id>attach-javadocs</id>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>3.2.4</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <gpgArguments>
-            <arg>--pinentry-mode</arg>
-            <arg>loopback</arg>
-          </gpgArguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <profiles>
-    <!-- release profile for maven central -->
-    <profile>
-      <id>release</id>
-      <activation>
-        <property>
-          <name>release</name>
-        </property>
-      </activation>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>${sonatype.server.id}</id>
-          <url>${repo.sonatype.url}</url>
-        </snapshotRepository>
-        <repository>
-          <id>${sonatype.server.id}</id>
-          <url>${repo.sonatype.url}</url>
-        </repository>
-      </distributionManagement>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <doclint>none</doclint>
-            </configuration>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.central</groupId>
-            <artifactId>central-publishing-maven-plugin</artifactId>
-            <version>${version.central.publishing.maven.plugin}</version>
-            <extensions>true</extensions>
-            <configuration>
-              <publishingServerId>${sonatype.server.id}</publishingServerId>
-              <autoPublish>${autoPublish}</autoPublish>
-              <waitUntil>${waitUntil}</waitUntil>
-              <deploymentName>${deploymentName}</deploymentName>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-  <contributors>
-    <contributor>
-      <name>Lineaje DepFixer</name>
-      <email>221268890+Lineaje-DepFixer@users.noreply.github.com</email>
-    </contributor>
-  </contributors>
 </project>
